@@ -10,14 +10,20 @@ public:
     boost::filesystem::path destinationFolder;
 
     PatchExtractorConfiguration() {
-        rotate90 = rotate180 = rotate270 = false;
-        patchHeight = patchWidth = 20; //Pavani et al; 2010 defaults
-                                       //Viola, Jones; 2004 is 24x24
+        init();
     }
 
     PatchExtractorConfiguration(boost::filesystem::path & destinationFolder_) {
-        PatchExtractorConfiguration();
+        init();
         destinationFolder = destinationFolder_;
+    }
+
+private:
+    void init()
+    {
+        rotate90 = rotate180 = rotate270 = false;
+        patchHeight = patchWidth = 20; //Pavani et al; 2010 defaults
+                                       //Viola, Jones; 2004 is 24x24
     }
 };
 
