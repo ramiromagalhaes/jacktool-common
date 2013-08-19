@@ -3,8 +3,6 @@
 #include <boost/filesystem/fstream.hpp>
 #include <boost/filesystem.hpp>
 
-#include "extract_patch.h"
-
 Markings::Markings()
 {
     empty = new std::vector<Rectangle>();
@@ -12,13 +10,13 @@ Markings::Markings()
 
 Markings::Markings(const std::string base_directory_)
 {
-    changeBaseDirectory(base_directory_);
+    empty = new std::vector<Rectangle>();
+    setBaseDirectory(base_directory_);
 }
 
-void Markings::changeBaseDirectory(const std::string base_directory_)
+void Markings::setBaseDirectory(const std::string base_directory_)
 {
     base_directory = base_directory_;
-    is_dirty = false;
 
     std::map<std::string, std::vector<Rectangle>*>::iterator it = exclusions.begin();
     const std::map<std::string, std::vector<Rectangle>*>::iterator end = exclusions.end();
@@ -29,6 +27,11 @@ void Markings::changeBaseDirectory(const std::string base_directory_)
 
     exclusions.clear();
     load();
+}
+
+std::string Markings::getBaseDirectory() const
+{
+    return base_directory;
 }
 
 void Markings::set(const std::string image, std::vector<Rectangle> *markings)
@@ -43,8 +46,6 @@ void Markings::set(const std::string image, std::vector<Rectangle> *markings)
     {
         exclusions[image] = markings;
     }
-
-    is_dirty = true;
 }
 
 const std::vector<Rectangle> * Markings::get(const std::string &image) const
@@ -66,8 +67,6 @@ void Markings::remove(const std::string & image)
     {
         exclusions.erase(it);
     }
-
-    is_dirty = true;
 }
 
 bool Markings::save()
@@ -85,29 +84,17 @@ bool Markings::save()
     outputArchive << *this;
     outputStream.close();
 
-    is_dirty = false;
     return true;
 }
 
-void Markings::processAll(const PatchExtractorConfiguration &cfg) const
+std::map<std::string, std::vector<Rectangle> *>::const_iterator Markings::exclusionsBegin() const
 {
-    boost::filesystem::path archivePath( base_directory );
-
-    for(std::map<std::string, std::vector<Rectangle>*>::const_iterator it = exclusions.begin(); it != exclusions.end(); ++it) {
-        const std::map<std::string, std::vector<Rectangle> *>::value_type v = *it;
-
-        const boost::filesystem::path file = archivePath / v.first;
-
-        if ( !extract_patches(file, *v.second, cfg) )
-        {
-            return;
-        }
-    }
+    return exclusions.begin();
 }
 
-bool Markings::isDirty()
+std::map<std::string, std::vector<Rectangle> *>::const_iterator Markings::exclusionsEnd() const
 {
-    return is_dirty;
+    return exclusions.end();
 }
 
 bool Markings::load()
