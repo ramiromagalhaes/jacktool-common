@@ -24,8 +24,8 @@ public:
     void set(const std::string image, std::vector<Rectangle> * markings);
     const std::vector<Rectangle> * get(const std::string & image) const;
     void remove(const std::string & image);
-    std::map<std::string, std::vector<Rectangle> *>::const_iterator exclusionsBegin() const;
-    std::map<std::string, std::vector<Rectangle> *>::const_iterator exclusionsEnd() const;
+    std::map<std::string, std::vector<Rectangle> *>::const_iterator imagesExclusionsMapBegin() const;
+    std::map<std::string, std::vector<Rectangle> *>::const_iterator imagesExclusionsMapEnd() const;
 
     bool save();
 

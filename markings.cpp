@@ -87,12 +87,12 @@ bool Markings::save()
     return true;
 }
 
-std::map<std::string, std::vector<Rectangle> *>::const_iterator Markings::exclusionsBegin() const
+std::map<std::string, std::vector<Rectangle> *>::const_iterator Markings::imagesExclusionsMapBegin() const
 {
     return exclusions.begin();
 }
 
-std::map<std::string, std::vector<Rectangle> *>::const_iterator Markings::exclusionsEnd() const
+std::map<std::string, std::vector<Rectangle> *>::const_iterator Markings::imagesExclusionsMapEnd() const
 {
     return exclusions.end();
 }
