@@ -72,9 +72,29 @@ void Markings::remove(const std::string & image)
 bool Markings::save()
 {
     boost::filesystem::path archivePath( base_directory );
+
+    {
+        std::map<std::string, std::vector<Rectangle> *>::iterator it = exclusions.begin();
+        const std::map<std::string, std::vector<Rectangle> *>::iterator end = exclusions.end();
+        for(; it != end; ++it)
+        {
+            const std::map<std::string, std::vector<Rectangle> *>::value_type v = *it;
+            const boost::filesystem::path imagePath = archivePath / v.first;
+
+            if ( boost::filesystem::exists(imagePath) )
+            {
+                ++it;
+            }
+            else
+            {
+                exclusions.erase(it++);
+            }
+        }
+    }
+
     archivePath = archivePath / ".jacktool.data";
 
-    boost::filesystem::ofstream outputStream(archivePath);
+    boost::filesystem::ofstream outputStream(archivePath, std::ios::out | std::ios::trunc);
     if (!outputStream.is_open()) //TODO has write permission?
     {
         return false;
